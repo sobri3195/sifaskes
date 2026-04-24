@@ -15,6 +15,7 @@ function App() {
   const [detailFacility, setDetailFacility] = useState(null);
   const [editingFacility, setEditingFacility] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
 
   const filteredFacilities = useMemo(() => facilities.filter((item) => {
     const bySearch = item.name.toLowerCase().includes(search.toLowerCase());
@@ -70,10 +71,15 @@ function App() {
           <option>Semua</option>
           {jajaranOptions.map((item) => <option key={item}>{item}</option>)}
         </select>
-        <button onClick={handleCreate}>+ Tambah Fasilitas</button>
+        <button type="button" onClick={handleCreate}>+ Tambah Fasilitas</button>
       </section>
 
-      <MapView facilities={filteredFacilities} onDetail={setDetailFacility} />
+      <MapView
+        facilities={filteredFacilities}
+        onDetail={setDetailFacility}
+        isFullscreen={isMapFullscreen}
+        onToggleFullscreen={() => setIsMapFullscreen((prev) => !prev)}
+      />
 
       <section className="cards-grid">
         {filteredFacilities.map((facility) => <FacilityCard key={facility.id} facility={facility} onDetail={setDetailFacility} />)}
