@@ -1,8 +1,22 @@
+import L from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 const indonesiaCenter = [-2.5, 118];
 
 const totalSdm = (sdm = {}) => Object.values(sdm).reduce((sum, n) => sum + Number(n || 0), 0);
+
+const markerClassByType = {
+  'RSAU BLU': 'marker-rsau-blu',
+  FKTP: 'marker-fktp',
+};
+
+const getFacilityMarkerIcon = (type) =>
+  L.divIcon({
+    className: `facility-marker ${markerClassByType[type] || 'marker-default'}`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -10],
+  });
 
 function MapView({ facilities, onDetail, isFullscreen, onToggleFullscreen }) {
   return (
@@ -20,7 +34,11 @@ function MapView({ facilities, onDetail, isFullscreen, onToggleFullscreen }) {
         />
 
         {facilities.map((facility) => (
-          <Marker key={facility.id} position={[facility.latitude, facility.longitude]}>
+          <Marker
+            key={facility.id}
+            position={[facility.latitude, facility.longitude]}
+            icon={getFacilityMarkerIcon(facility.type)}
+          >
             <Popup>
               <div className="popup-content">
                 <h4>{facility.name}</h4>
