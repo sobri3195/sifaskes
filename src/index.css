@@ -1,0 +1,32 @@
+:root { font-family: Inter, Arial, sans-serif; color: #0b1b2b; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f3f7fb; }
+.app-container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.header { background: linear-gradient(120deg, #043d79, #0266bb); color: white; border-radius: 14px; padding: 16px 20px; display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+.header h1 { margin: 0; }
+.header p { margin: 4px 0 0; }
+.tagline { font-size: 0.92rem; opacity: 0.95; }
+.toolbar { margin: 16px 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.toolbar input, .toolbar select, .toolbar button, .facility-form input, .facility-form select, .facility-form textarea { border: 1px solid #b8c5d3; border-radius: 10px; padding: 10px; font: inherit; }
+.toolbar button, .facility-card button, .actions button, .popup-content button { background: #0659a7; color: #fff; border: none; border-radius: 10px; padding: 10px 12px; cursor: pointer; }
+.main-map { height: 56vh; min-height: 380px; border-radius: 14px; overflow: hidden; }
+.cards-grid { margin-top: 16px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.facility-card { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(2, 41, 84, 0.09); display: grid; gap: 6px; }
+.facility-card h3 { margin: 0; font-size: 1rem; }
+.facility-card p { margin: 0; font-size: 0.9rem; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: grid; place-items: center; z-index: 1200; padding: 16px; }
+.modal { background: #fff; border-radius: 14px; width: min(760px, 100%); max-height: 90vh; overflow: auto; padding: 16px; position: relative; }
+.modal-close { position: absolute; right: 10px; top: 10px; border: none; background: transparent; font-size: 20px; cursor: pointer; }
+.facility-form { display: grid; gap: 10px; }
+.grid-2 { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.checkbox { display: flex; align-items: center; gap: 8px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.actions .danger { background: #c12323; }
+.mini-map { height: 220px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+.popup-content h4 { margin: 0 0 6px; }
+.popup-content p { margin: 2px 0; }
+@media (max-width: 768px) {
+  .app-container { padding: 12px; }
+  .main-map { height: 48vh; min-height: 300px; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
