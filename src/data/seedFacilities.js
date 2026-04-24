@@ -1,4 +1,4 @@
-const typeOptions = ['RSAU PNBP', 'RSAU BLU', 'FKTP'];
+export const facilityTypeOptions = ['RSAU PNBP', 'RSAU BLU', 'FKTP', 'RSAU Kemenkes', 'RSAU Kemenhan/TNI'];
 export const jajaranOptions = [
   'Kodau I',
   'Kodau II',
@@ -178,7 +178,7 @@ const estimateCoordinate = (name) => {
 const toFacility = ([name, type, jajaran], index) => ({
   id: `facility-${index + 1}`,
   name,
-  type: typeOptions.includes(type) ? type : 'FKTP',
+  type: facilityTypeOptions.includes(type) ? type : 'FKTP',
   jajaran,
   address: '',
   ...estimateCoordinate(name),

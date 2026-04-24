@@ -46,7 +46,7 @@ npm run dev
 - Marker fasilitas bisa diklik
 - Popup marker menampilkan ringkasan + tombol **Lihat Detail**
 - Pencarian nama fasilitas
-- Filter jenis fasilitas (RSAU PNBP, RSAU BLU, FKTP)
+- Filter jenis fasilitas (RSAU PNBP, RSAU BLU, FKTP, RSAU Kemenkes, RSAU Kemenhan/TNI)
 - Filter jajaran
 - CRUD data fasilitas (tambah, edit, hapus)
 - Edit koordinat dan flag `isCoordinateEstimated`

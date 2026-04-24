@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { jajaranOptions } from '../data/seedFacilities';
+import { facilityTypeOptions, jajaranOptions } from '../data/seedFacilities';
 
 const defaultValue = {
   name: '',
@@ -53,7 +53,7 @@ function FacilityForm({ initialData, onSave, onCancel }) {
       <label>Nama fasilitas<input required value={form.name} onChange={(e) => updateField('name', e.target.value)} /></label>
       <label>Jenis fasilitas
         <select value={form.type} onChange={(e) => updateField('type', e.target.value)}>
-          <option>RSAU PNBP</option><option>RSAU BLU</option><option>FKTP</option>
+          {facilityTypeOptions.map((item) => <option key={item}>{item}</option>)}
         </select>
       </label>
       <label>Jajaran

@@ -5,7 +5,7 @@ import FacilityCard from './components/FacilityCard';
 import FacilityForm from './components/FacilityForm';
 import FacilityDetailModal from './components/FacilityDetailModal';
 import { initializeFacilities, saveFacilities } from './utils/storage';
-import { jajaranOptions } from './data/seedFacilities';
+import { facilityTypeOptions, jajaranOptions } from './data/seedFacilities';
 
 function App() {
   const [facilities, setFacilities] = useState(() => initializeFacilities());
@@ -63,9 +63,7 @@ function App() {
         <input placeholder="Cari nama fasilitas..." value={search} onChange={(e) => setSearch(e.target.value)} />
         <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
           <option>Semua</option>
-          <option>RSAU PNBP</option>
-          <option>RSAU BLU</option>
-          <option>FKTP</option>
+          {facilityTypeOptions.map((item) => <option key={item}>{item}</option>)}
         </select>
         <select value={jajaranFilter} onChange={(e) => setJajaranFilter(e.target.value)}>
           <option>Semua</option>
