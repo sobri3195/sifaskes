@@ -31,6 +31,18 @@ body { margin: 0; background: #f3f7fb; }
 .mini-map { height: 220px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
 .popup-content h4 { margin: 0 0 6px; }
 .popup-content p { margin: 2px 0; }
+
+.facility-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+.marker-rsau-blu { background: #1f9d3a; }
+.marker-fktp { background: #d42e2e; }
+.marker-default { background: #2f78d4; }
+
 @media (max-width: 768px) {
   .app-container { padding: 12px; }
   .header { padding: 14px; }
