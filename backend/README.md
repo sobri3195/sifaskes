@@ -50,9 +50,9 @@ php -S 0.0.0.0:8080 -t backend backend/index.php
 ## 5) Akun default
 
 - `admin.pusat` / `AdminPusat!2026`
-- `admin.001` s.d. `admin.xxx` / `AdminRS!2026`
-- `user.001` s.d. `user.xxx` / `UserRS!2026`
+- `admin.blu.xxx`, `admin.pnbp.xxx`, `admin.fktp.xxx` / `AdminRS!2026`
+- `user.blu.xxx`, `user.pnbp.xxx`, `user.fktp.xxx` / `UserRS!2026`
 
-`xxx` mengikuti jumlah fasilitas hasil seed (saat ini 80).
+`xxx` mengikuti `id` fasilitas hasil seed (saat ini 80).
 
 > Setelah login berhasil, gunakan header `Authorization: Bearer <token>` untuk akses endpoint lain.
