@@ -1,4 +1,4 @@
-export const facilityTypeOptions = ['RSAU PNBP', 'RSAU BLU', 'FKTP', 'RSAU Kemenkes', 'RSAU Kemenhan/TNI'];
+export const facilityTypeOptions = ['RSAU PNBP', 'RSAU BLU', 'FKTP'];
 export const jajaranOptions = [
   'Kodau I',
   'Kodau II',
