@@ -15,7 +15,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
     exit;
 }
 
-$pdo = createPdo($config);
+$pdo = null;
+try {
+    $pdo = createPdo($config);
+} catch (PDOException $exception) {
+    error_log('Database connection failed: ' . $exception->getMessage());
+    sendJson(['message' => 'Layanan database tidak tersedia. Coba lagi nanti.'], 503);
+}
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $segments = array_values(array_filter(explode('/', trim($path, '/'))));
