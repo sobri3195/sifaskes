@@ -7,6 +7,12 @@ import FacilityDetailModal from './components/FacilityDetailModal';
 import { initializeFacilities, saveFacilities } from './utils/storage';
 import { facilityTypeOptions, jajaranOptions } from './data/seedFacilities';
 
+const appUsers = [
+  { username: 'admin.pusat', password: 'AdminPusat!2026', name: 'Admin Pusat', role: 'admin_pusat' },
+  { username: 'admin.001', password: 'AdminRS!2026', name: 'Admin RSAU 001', role: 'rs_admin' },
+  { username: 'admin.002', password: 'AdminRS!2026', name: 'Admin RSAU 002', role: 'rs_admin' },
+];
+
 function App() {
   const [facilities, setFacilities] = useState(() => initializeFacilities());
   const [search, setSearch] = useState('');
@@ -16,6 +22,11 @@ function App() {
   const [editingFacility, setEditingFacility] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+  const [loginData, setLoginData] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
 
   const filteredFacilities = useMemo(() => facilities.filter((item) => {
     const bySearch = item.name.toLowerCase().includes(search.toLowerCase());
@@ -29,9 +40,30 @@ function App() {
     saveFacilities(data);
   };
 
-  const handleCreate = () => {
+  const openCreateForm = () => {
     setEditingFacility(null);
     setIsFormOpen(true);
+  };
+
+  const openEditForm = (facility) => {
+    setEditingFacility(facility);
+    setIsFormOpen(true);
+  };
+
+  const requireLoginFor = (action) => {
+    if (loggedInUser) {
+      action();
+      return;
+    }
+
+    setPendingAction(() => action);
+    setLoginData({ username: '', password: '' });
+    setLoginError('');
+    setIsLoginOpen(true);
+  };
+
+  const handleCreate = () => {
+    requireLoginFor(openCreateForm);
   };
 
   const handleSave = (facility) => {
@@ -55,9 +87,33 @@ function App() {
     setDetailFacility(null);
   };
 
+  const handleLogin = (event) => {
+    event.preventDefault();
+
+    const found = appUsers.find((user) => user.username === loginData.username && user.password === loginData.password);
+    if (!found) {
+      setLoginError('Username atau password salah.');
+      return;
+    }
+
+    setLoggedInUser(found);
+    setIsLoginOpen(false);
+    setLoginError('');
+
+    if (pendingAction) {
+      pendingAction();
+      setPendingAction(null);
+    }
+  };
+
   return (
     <div className="app-container">
-      <Header />
+      <Header
+        loggedInUser={loggedInUser}
+        onLogout={() => {
+          setLoggedInUser(null);
+        }}
+      />
 
       <section className="toolbar">
         <input placeholder="Cari nama fasilitas..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -98,13 +154,42 @@ function App() {
         </div>
       )}
 
+      {isLoginOpen && (
+        <div className="modal-backdrop" onClick={() => setIsLoginOpen(false)}>
+          <div className="modal auth-modal" onClick={(event) => event.stopPropagation()}>
+            <h3>Login untuk Tambah/Edit</h3>
+            <p className="auth-note">Lihat data tidak perlu login. Login hanya dibutuhkan untuk tambah atau edit fasilitas.</p>
+            <form className="auth-form" onSubmit={handleLogin}>
+              <label>Username
+                <input
+                  required
+                  value={loginData.username}
+                  onChange={(event) => setLoginData((prev) => ({ ...prev, username: event.target.value }))}
+                />
+              </label>
+              <label>Password
+                <input
+                  required
+                  type="password"
+                  value={loginData.password}
+                  onChange={(event) => setLoginData((prev) => ({ ...prev, password: event.target.value }))}
+                />
+              </label>
+              {loginError && <p className="auth-error">{loginError}</p>}
+              <p className="auth-hint">Akun contoh: admin.pusat / AdminPusat!2026</p>
+              <div className="actions">
+                <button type="submit">Login</button>
+                <button type="button" onClick={() => setIsLoginOpen(false)}>Batal</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <FacilityDetailModal
         facility={detailFacility}
         onClose={() => setDetailFacility(null)}
-        onEdit={(facility) => {
-          setEditingFacility(facility);
-          setIsFormOpen(true);
-        }}
+        onEdit={(facility) => requireLoginFor(() => openEditForm(facility))}
         onDelete={handleDelete}
       />
     </div>
