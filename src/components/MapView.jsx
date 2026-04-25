@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import L from 'leaflet';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 
 const indonesiaCenter = [-2.5, 118];
 
@@ -18,7 +19,23 @@ const getFacilityMarkerIcon = (type) =>
     popupAnchor: [0, -10],
   });
 
-function MapView({ facilities, onDetail, isFullscreen, onToggleFullscreen }) {
+function MapFocusHandler({ focusedFacility }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!focusedFacility?.latitude || !focusedFacility?.longitude) {
+      return;
+    }
+
+    map.flyTo([focusedFacility.latitude, focusedFacility.longitude], Math.max(map.getZoom(), 11), {
+      duration: 0.8,
+    });
+  }, [focusedFacility, map]);
+
+  return null;
+}
+
+function MapView({ facilities, onDetail, isFullscreen, onToggleFullscreen, focusedFacility }) {
   return (
     <section className={`map-section ${isFullscreen ? 'is-fullscreen' : ''}`}>
       <div className="map-toolbar">
@@ -32,6 +49,8 @@ function MapView({ facilities, onDetail, isFullscreen, onToggleFullscreen }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+        <MapFocusHandler focusedFacility={focusedFacility} />
 
         {facilities.map((facility) => (
           <Marker

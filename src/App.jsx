@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import Header from './components/Header';
 import MapView from './components/MapView';
-import FacilityCard from './components/FacilityCard';
+import FacilityList from './components/FacilityList';
 import FacilityForm from './components/FacilityForm';
 import FacilityDetailModal from './components/FacilityDetailModal';
 import { initializeFacilities, saveFacilities } from './utils/storage';
@@ -22,6 +22,7 @@ function App() {
   const [editingFacility, setEditingFacility] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [focusedFacility, setFocusedFacility] = useState(null);
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
@@ -133,11 +134,15 @@ function App() {
         onDetail={setDetailFacility}
         isFullscreen={isMapFullscreen}
         onToggleFullscreen={() => setIsMapFullscreen((prev) => !prev)}
+        focusedFacility={focusedFacility}
       />
 
-      <section className="cards-grid">
-        {filteredFacilities.map((facility) => <FacilityCard key={facility.id} facility={facility} onDetail={setDetailFacility} />)}
-      </section>
+      <FacilityList
+        facilities={filteredFacilities}
+        onDetail={setDetailFacility}
+        selectedFacilityId={focusedFacility?.id}
+        onFocusFacility={setFocusedFacility}
+      />
 
       {isFormOpen && (
         <div className="modal-backdrop" onClick={() => setIsFormOpen(false)}>
