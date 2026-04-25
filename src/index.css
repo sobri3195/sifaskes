@@ -258,6 +258,28 @@ fieldset {
   margin: 2px 0;
 }
 
+
+.custom-map-marker {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.5);
+}
+
+.custom-map-marker.marker-pnbp {
+  background: #2563eb;
+}
+
+.custom-map-marker.marker-blu {
+  background: #16a34a;
+}
+
+.custom-map-marker.marker-fktp {
+  background: #dc2626;
+}
+
+
 @media (max-width: 768px) {
   .app-container {
     padding: 12px;

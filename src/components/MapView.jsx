@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import L from 'leaflet';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 
 const indonesiaCenter = [-2.5, 118];
 
 const totalSdm = (sdm = {}) => Object.values(sdm).reduce((sum, n) => sum + Number(n || 0), 0);
+
 
 function MapFocusHandler({ focusedFacility }) {
   const map = useMap();
@@ -24,6 +26,21 @@ function MapFocusHandler({ focusedFacility }) {
 function MapView({ facilities, onDetail, focusedFacility }) {
   const mapWrapperRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const markerIcons = useMemo(() => {
+    const createIcon = (className) =>
+      L.divIcon({
+        className: `custom-map-marker ${className}`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+        popupAnchor: [0, -10],
+      });
+
+    return {
+      'RSAU PNBP': createIcon('marker-pnbp'),
+      'RSAU BLU': createIcon('marker-blu'),
+      FKTP: createIcon('marker-fktp'),
+    };
+  }, []);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -64,7 +81,11 @@ function MapView({ facilities, onDetail, focusedFacility }) {
           <MapFocusHandler focusedFacility={focusedFacility} />
 
           {facilities.map((facility) => (
-            <Marker key={facility.id} position={[facility.latitude, facility.longitude]}>
+            <Marker
+              key={facility.id}
+              position={[facility.latitude, facility.longitude]}
+              icon={markerIcons[facility.type] || markerIcons['RSAU PNBP']}
+            >
               <Popup>
                 <div className="popup-content">
                   <h4>{facility.name}</h4>
