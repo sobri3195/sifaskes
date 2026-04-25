@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 
 const indonesiaCenter = [-2.5, 118];
@@ -22,34 +22,66 @@ function MapFocusHandler({ focusedFacility }) {
 }
 
 function MapView({ facilities, onDetail, focusedFacility }) {
+  const mapWrapperRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = async () => {
+    if (!document.fullscreenElement && mapWrapperRef.current) {
+      await mapWrapperRef.current.requestFullscreen();
+      return;
+    }
+
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    }
+  };
+
   return (
     <section className="map-section">
-      <MapContainer center={indonesiaCenter} zoom={5} minZoom={4} className="main-map">
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+      <div ref={mapWrapperRef} className={`map-wrapper ${isFullscreen ? 'is-fullscreen' : ''}`}>
+        <div className="map-toolbar">
+          <button type="button" className="map-fullscreen-btn" onClick={toggleFullscreen}>
+            {isFullscreen ? 'Keluar Full Page' : 'Full Page Map'}
+          </button>
+        </div>
+        <MapContainer center={indonesiaCenter} zoom={5} minZoom={4} className="main-map">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-        <MapFocusHandler focusedFacility={focusedFacility} />
+          <MapFocusHandler focusedFacility={focusedFacility} />
 
-        {facilities.map((facility) => (
-          <Marker key={facility.id} position={[facility.latitude, facility.longitude]}>
-            <Popup>
-              <div className="popup-content">
-                <h4>{facility.name}</h4>
-                <p>Jenis: {facility.type}</p>
-                <p>Jajaran: {facility.jajaran}</p>
-                <p>Akreditasi: {facility.accreditation || '-'}</p>
-                <p>Jumlah bed: {facility.bedCount || 0}</p>
-                <p>Jumlah SDM: {totalSdm(facility.sdm)}</p>
-                <button type="button" onClick={() => onDetail(facility)}>
-                  Lihat Detail
-                </button>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+          {facilities.map((facility) => (
+            <Marker key={facility.id} position={[facility.latitude, facility.longitude]}>
+              <Popup>
+                <div className="popup-content">
+                  <h4>{facility.name}</h4>
+                  <p>Jenis: {facility.type}</p>
+                  <p>Jajaran: {facility.jajaran}</p>
+                  <p>Akreditasi: {facility.accreditation || '-'}</p>
+                  <p>Jumlah bed: {facility.bedCount || 0}</p>
+                  <p>Jumlah SDM: {totalSdm(facility.sdm)}</p>
+                  <button type="button" onClick={() => onDetail(facility)}>
+                    Lihat Detail
+                  </button>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
+      </div>
     </section>
   );
 }
