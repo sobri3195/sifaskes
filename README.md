@@ -6,6 +6,17 @@ Tagline: **Peta Profil RSAU & FKTP Jajaran TNI AU**
 
 ```bash
 sifaskes/
+├── backend/
+│   ├── index.php
+│   ├── config.php
+│   ├── database.php
+│   ├── helpers.php
+│   ├── README.md
+│   └── sql/
+│       ├── schema.sql
+│       ├── seed_facilities.sql
+│       ├── seed_users.sql
+│       └── bootstrap.sql
 ├── index.html
 ├── package.json
 ├── vite.config.js
@@ -26,64 +37,33 @@ sifaskes/
         └── FacilityDetailModal.jsx
 ```
 
-## 2) Perintah instalasi dari awal
+## 2) Frontend (React) instalasi
 
 ```bash
-# 1. Masuk ke folder project
 cd sifaskes
-
-# 2. Install dependency
 npm install
-
-# 3. Jalankan development server
 npm run dev
 ```
 
-## 3) Ringkasan fitur yang sudah dibuat
-
-- React + Vite (deploy-ready ke Vercel)
-- Peta Indonesia besar dengan Leaflet + React Leaflet
-- Marker fasilitas bisa diklik
-- Popup marker menampilkan ringkasan + tombol **Lihat Detail**
-- Pencarian nama fasilitas
-- Filter jenis fasilitas (RSAU PNBP, RSAU BLU, FKTP, RSAU Kemenkes, RSAU Kemenhan/TNI)
-- Filter jajaran
-- CRUD data fasilitas (tambah, edit, hapus)
-- Edit koordinat dan flag `isCoordinateEstimated`
-- Seed data RSAU/FKTP sesuai daftar
-- Penyimpanan data menggunakan Local Storage
-- UI modern responsif tanpa sidebar (hanya header/navbar atas)
-
-## 4) Cara menjalankan lokal
-
-1. `npm install`
-2. `npm run dev`
-3. Buka URL dari terminal (default biasanya `http://localhost:5173`)
-4. Data awal otomatis di-seed saat pertama kali aplikasi dibuka.
-
-## 5) Cara deploy ke Vercel
-
-### Opsi A (via dashboard Vercel)
-1. Push repo ke GitHub/GitLab/Bitbucket.
-2. Login ke Vercel.
-3. **Add New Project** lalu import repo.
-4. Framework preset: **Vite**.
-5. Build command: `npm run build`
-6. Output directory: `dist`
-7. Klik **Deploy**.
-
-### Opsi B (Vercel CLI)
+## 3) Backend (PHP + MySQL) instalasi
 
 ```bash
-npm i -g vercel
-vercel login
-vercel
-vercel --prod
+# inisialisasi database + seed fasilitas + akun
+mysql -u root -p < backend/sql/bootstrap.sql
+
+# jalankan API lokal
+php -S 0.0.0.0:8080 -t backend backend/index.php
 ```
 
-## 6) Catatan deploy-ready
+Dokumentasi endpoint dan hak akses ada di `backend/README.md`.
 
-- Tidak memakai backend/database server.
-- Seluruh perubahan data disimpan ke browser Local Storage.
-- Build output menggunakan standar Vite (`dist`).
+## 4) Ringkasan fitur
 
+- React + Vite + Leaflet untuk peta fasilitas.
+- CRUD data fasilitas di frontend.
+- Backend PHP REST API dengan autentikasi token.
+- Role akses:
+  - `admin_pusat`: full akses semua fasilitas.
+  - `rs_admin`: edit data fasilitas RS sendiri.
+  - `user_rs`: edit data fasilitas RS sendiri.
+- Seed akun untuk seluruh data **RSAU BLU**, **RSAU PNBP**, dan **FKTP**.

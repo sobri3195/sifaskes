@@ -1,0 +1,47 @@
+CREATE DATABASE IF NOT EXISTS sifaskes CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE sifaskes;
+
+DROP TABLE IF EXISTS access_tokens;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS facilities;
+
+CREATE TABLE facilities (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(190) NOT NULL UNIQUE,
+    name VARCHAR(190) NOT NULL,
+    type ENUM('RSAU BLU', 'RSAU PNBP', 'FKTP') NOT NULL,
+    jajaran VARCHAR(100) NULL,
+    address TEXT NULL,
+    latitude DECIMAL(10,7) NULL,
+    longitude DECIMAL(10,7) NULL,
+    is_coordinate_estimated TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    facility_id INT UNSIGNED NULL,
+    username VARCHAR(64) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin_pusat', 'rs_admin', 'user_rs') NOT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_users_facility
+      FOREIGN KEY (facility_id) REFERENCES facilities(id)
+      ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE access_tokens (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    token CHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tokens_user
+      FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX idx_access_tokens_user_id (user_id),
+    INDEX idx_access_tokens_expires_at (expires_at)
+);
