@@ -5,7 +5,7 @@ function Header() {
     <header className="header">
       <div className="header-brand">
         <img src={logo} alt="Logo SiFaskes" className="header-logo" />
-        <div>
+        <div className="header-text">
           <h1>SiFaskes</h1>
           <p>Sistem Informasi Fasilitas Kesehatan</p>
         </div>

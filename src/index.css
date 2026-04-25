@@ -34,17 +34,31 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .header-logo {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.header-text {
+  min-width: 0;
 }
 
 .header h1,
 .header p {
   margin: 0;
+}
+
+.header h1 {
+  font-size: clamp(1.3rem, 2.8vw, 1.7rem);
+}
+
+.header p {
+  opacity: 0.95;
 }
 
 .tagline {
@@ -86,11 +100,38 @@ button:hover {
   margin-bottom: 16px;
 }
 
+.map-wrapper {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.map-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+  background: rgba(15, 23, 42, 0.88);
+}
+
+.map-fullscreen-btn {
+  background: #0e7490;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
 .main-map {
   height: 58vh;
   min-height: 380px;
-  border-radius: 14px;
-  overflow: hidden;
+}
+
+.map-wrapper:fullscreen {
+  border-radius: 0;
+}
+
+.map-wrapper:fullscreen .main-map {
+  height: calc(100vh - 52px);
+  min-height: 0;
 }
 
 .results-head p {
@@ -200,12 +241,27 @@ fieldset {
     padding: 12px;
   }
 
+  .header {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .header-brand {
+    width: 100%;
+  }
+
+  .tagline {
+    width: 100%;
+    text-align: center;
+    border-radius: 10px;
+  }
+
   .toolbar {
     grid-template-columns: 1fr;
   }
 
   .main-map {
-    height: 50vh;
+    height: 52vh;
     min-height: 280px;
   }
 
