@@ -7,6 +7,17 @@ import FacilityDetailModal from './components/FacilityDetailModal';
 import { initializeFacilities, saveFacilities } from './utils/storage';
 import { facilityTypeOptions, jajaranOptions } from './data/seedFacilities';
 
+const rsTypeReference = [
+  {
+    owner: 'Kemenkes',
+    type: 'Klasifikasi RS umum: Kelas A, B, C, D.',
+  },
+  {
+    owner: 'Kemenhan/TNI',
+    type: 'Klasifikasi internal: Rumah Sakit Tingkat II, III, dan IV.',
+  },
+];
+
 function App() {
   const [facilities, setFacilities] = useState(() => initializeFacilities());
   const [search, setSearch] = useState('');
@@ -77,6 +88,19 @@ function App() {
   return (
     <div className="app-container">
       <Header />
+
+      <section className="rs-type-reference" aria-label="Referensi tipe rumah sakit">
+        <p>
+          <strong>Referensi cepat tipe RS:</strong>
+        </p>
+        <ul>
+          {rsTypeReference.map((item) => (
+            <li key={item.owner}>
+              <strong>{item.owner}</strong> — {item.type}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="toolbar" aria-label="Filter fasilitas">
         <input

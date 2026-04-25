@@ -68,6 +68,28 @@ body {
   font-size: 0.88rem;
 }
 
+
+.rs-type-reference {
+  margin-top: 14px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #1e3a8a;
+}
+
+.rs-type-reference p,
+.rs-type-reference ul {
+  margin: 0;
+}
+
+.rs-type-reference ul {
+  margin-top: 6px;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
 .toolbar {
   margin: 16px 0;
   display: grid;
@@ -256,7 +278,29 @@ fieldset {
     border-radius: 10px;
   }
 
-  .toolbar {
+  
+.rs-type-reference {
+  margin-top: 14px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #1e3a8a;
+}
+
+.rs-type-reference p,
+.rs-type-reference ul {
+  margin: 0;
+}
+
+.rs-type-reference ul {
+  margin-top: 6px;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.toolbar {
     grid-template-columns: 1fr;
   }
 
