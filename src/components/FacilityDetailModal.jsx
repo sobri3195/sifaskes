@@ -8,15 +8,36 @@ function FacilityDetailModal({ facility, onClose, onEdit, onDelete }) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(event) => event.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button type="button" className="modal-close" onClick={onClose}>
+          ✕
+        </button>
+
         <h2>{facility.name}</h2>
-        <p><strong>Jenis:</strong> {facility.type}</p>
-        <p><strong>Jajaran:</strong> {facility.jajaran}</p>
-        <p><strong>Alamat:</strong> {facility.address || '-'}</p>
-        <p><strong>Profil singkat:</strong> {facility.profileNote || '-'}</p>
-        <p><strong>Akreditasi:</strong> {facility.accreditation || '-'}</p>
-        <p><strong>Jumlah bed:</strong> {facility.bedCount || 0}</p>
-        <p><strong>Total SDM:</strong> {totalSdm(facility.sdm)}</p>
+        <p>
+          <strong>Jenis:</strong> {facility.type}
+        </p>
+        <p>
+          <strong>Jajaran:</strong> {facility.jajaran}
+        </p>
+        <p>
+          <strong>Alamat:</strong> {facility.address || '-'}
+        </p>
+        <p>
+          <strong>Profil singkat:</strong> {facility.profileNote || '-'}
+        </p>
+        <p>
+          <strong>Akreditasi:</strong> {facility.accreditation || '-'}
+        </p>
+        <p>
+          <strong>Jumlah bed:</strong> {facility.bedCount || 0}
+        </p>
+        <p>
+          <strong>Total SDM:</strong> {totalSdm(facility.sdm)}
+        </p>
+        <p>
+          <strong>Status koordinat:</strong> {facility.isCoordinateEstimated ? 'Estimasi' : 'Validasi'}
+        </p>
+
         <ul>
           <li>Dokter umum: {facility.sdm?.dokterUmum || 0}</li>
           <li>Dokter gigi: {facility.sdm?.dokterGigi || 0}</li>
@@ -26,16 +47,28 @@ function FacilityDetailModal({ facility, onClose, onEdit, onDelete }) {
           <li>Tenaga administrasi: {facility.sdm?.tenagaAdministrasi || 0}</li>
           <li>Tenaga lainnya: {facility.sdm?.tenagaLainnya || 0}</li>
         </ul>
-        <MapContainer center={[facility.latitude, facility.longitude]} zoom={12} className="mini-map" dragging={false} scrollWheelZoom={false}>
+
+        <MapContainer
+          center={[facility.latitude, facility.longitude]}
+          zoom={12}
+          className="mini-map"
+          dragging={false}
+          scrollWheelZoom={false}
+        >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <Marker position={[facility.latitude, facility.longitude]} />
         </MapContainer>
+
         <div className="actions">
-          <button onClick={() => onEdit(facility)}>Edit</button>
-          <button className="danger" onClick={() => onDelete(facility.id)}>Hapus</button>
+          <button type="button" onClick={() => onEdit(facility)}>
+            Edit
+          </button>
+          <button type="button" className="danger" onClick={() => onDelete(facility.id)}>
+            Hapus
+          </button>
         </div>
       </div>
     </div>

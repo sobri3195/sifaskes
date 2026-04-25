@@ -1,17 +1,11 @@
 import { useMemo, useState } from 'react';
 import Header from './components/Header';
 import MapView from './components/MapView';
-import FacilityList from './components/FacilityList';
+import FacilityCard from './components/FacilityCard';
 import FacilityForm from './components/FacilityForm';
 import FacilityDetailModal from './components/FacilityDetailModal';
 import { initializeFacilities, saveFacilities } from './utils/storage';
 import { facilityTypeOptions, jajaranOptions } from './data/seedFacilities';
-
-const appUsers = [
-  { username: 'admin.pusat', password: 'AdminPusat!2026', name: 'Admin Pusat', role: 'admin_pusat' },
-  { username: 'admin.001', password: 'AdminRS!2026', name: 'Admin RSAU 001', role: 'rs_admin' },
-  { username: 'admin.002', password: 'AdminRS!2026', name: 'Admin RSAU 002', role: 'rs_admin' },
-];
 
 function App() {
   const [facilities, setFacilities] = useState(() => initializeFacilities());
@@ -21,61 +15,50 @@ function App() {
   const [detailFacility, setDetailFacility] = useState(null);
   const [editingFacility, setEditingFacility] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [focusedFacility, setFocusedFacility] = useState(null);
-  const [loggedInUser, setLoggedInUser] = useState(null);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
-  const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [loginError, setLoginError] = useState('');
 
-  const filteredFacilities = useMemo(() => facilities.filter((item) => {
-    const bySearch = item.name.toLowerCase().includes(search.toLowerCase());
-    const byType = typeFilter === 'Semua' || item.type === typeFilter;
-    const byJajaran = jajaranFilter === 'Semua' || item.jajaran === jajaranFilter;
-    return bySearch && byType && byJajaran;
-  }), [facilities, search, typeFilter, jajaranFilter]);
+  const filteredFacilities = useMemo(
+    () =>
+      facilities.filter((item) => {
+        const bySearch = item.name.toLowerCase().includes(search.toLowerCase());
+        const byType = typeFilter === 'Semua' || item.type === typeFilter;
+        const byJajaran = jajaranFilter === 'Semua' || item.jajaran === jajaranFilter;
+        return bySearch && byType && byJajaran;
+      }),
+    [facilities, search, typeFilter, jajaranFilter],
+  );
 
-  const persist = (data) => {
-    setFacilities(data);
-    saveFacilities(data);
-  };
-
-  const openCreateForm = () => {
-    setEditingFacility(null);
-    setIsFormOpen(true);
-  };
-
-  const openEditForm = (facility) => {
-    setEditingFacility(facility);
-    setIsFormOpen(true);
-  };
-
-  const requireLoginFor = (action) => {
-    if (loggedInUser) {
-      action();
-      return;
-    }
-
-    setPendingAction(() => action);
-    setLoginData({ username: '', password: '' });
-    setLoginError('');
-    setIsLoginOpen(true);
-  };
-
-  const handleCreate = () => {
-    requireLoginFor(openCreateForm);
+  const persist = (next) => {
+    setFacilities(next);
+    saveFacilities(next);
   };
 
   const handleSave = (facility) => {
     const now = new Date().toISOString();
+
     if (editingFacility) {
-      const next = facilities.map((item) => item.id === editingFacility.id ? { ...item, ...facility, updatedAt: now } : item);
+      const next = facilities.map((item) =>
+        item.id === editingFacility.id
+          ? {
+              ...item,
+              ...facility,
+              updatedAt: now,
+            }
+          : item,
+      );
       persist(next);
       setDetailFacility(next.find((item) => item.id === editingFacility.id) || null);
+      setFocusedFacility(next.find((item) => item.id === editingFacility.id) || null);
     } else {
-      const newItem = { ...facility, id: `facility-${crypto.randomUUID()}`, createdAt: now, updatedAt: now };
-      persist([newItem, ...facilities]);
+      const newItem = {
+        ...facility,
+        id: `facility-${crypto.randomUUID()}`,
+        createdAt: now,
+        updatedAt: now,
+      };
+      const next = [newItem, ...facilities];
+      persist(next);
+      setFocusedFacility(newItem);
     }
 
     setIsFormOpen(false);
@@ -86,63 +69,73 @@ function App() {
     const next = facilities.filter((item) => item.id !== id);
     persist(next);
     setDetailFacility(null);
-  };
-
-  const handleLogin = (event) => {
-    event.preventDefault();
-
-    const found = appUsers.find((user) => user.username === loginData.username && user.password === loginData.password);
-    if (!found) {
-      setLoginError('Username atau password salah.');
-      return;
-    }
-
-    setLoggedInUser(found);
-    setIsLoginOpen(false);
-    setLoginError('');
-
-    if (pendingAction) {
-      pendingAction();
-      setPendingAction(null);
+    if (focusedFacility?.id === id) {
+      setFocusedFacility(null);
     }
   };
 
   return (
     <div className="app-container">
-      <Header
-        loggedInUser={loggedInUser}
-        onLogout={() => {
-          setLoggedInUser(null);
-        }}
-      />
+      <Header />
 
-      <section className="toolbar">
-        <input placeholder="Cari nama fasilitas..." value={search} onChange={(e) => setSearch(e.target.value)} />
-        <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-          <option>Semua</option>
-          {facilityTypeOptions.map((item) => <option key={item}>{item}</option>)}
+      <section className="toolbar" aria-label="Filter fasilitas">
+        <input
+          placeholder="Cari nama fasilitas..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+
+        <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+          <option value="Semua">Semua jenis</option>
+          {facilityTypeOptions.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
         </select>
-        <select value={jajaranFilter} onChange={(e) => setJajaranFilter(e.target.value)}>
-          <option>Semua</option>
-          {jajaranOptions.map((item) => <option key={item}>{item}</option>)}
+
+        <select value={jajaranFilter} onChange={(event) => setJajaranFilter(event.target.value)}>
+          <option value="Semua">Semua jajaran</option>
+          {jajaranOptions.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
         </select>
-        <button type="button" onClick={handleCreate}>+ Tambah Fasilitas</button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setEditingFacility(null);
+            setIsFormOpen(true);
+          }}
+        >
+          + Tambah Fasilitas
+        </button>
       </section>
 
       <MapView
         facilities={filteredFacilities}
         onDetail={setDetailFacility}
-        isFullscreen={isMapFullscreen}
-        onToggleFullscreen={() => setIsMapFullscreen((prev) => !prev)}
         focusedFacility={focusedFacility}
       />
 
-      <FacilityList
-        facilities={filteredFacilities}
-        onDetail={setDetailFacility}
-        selectedFacilityId={focusedFacility?.id}
-        onFocusFacility={setFocusedFacility}
-      />
+      <section className="results-head">
+        <p>
+          Menampilkan <strong>{filteredFacilities.length}</strong> fasilitas
+        </p>
+      </section>
+
+      <section className="cards-grid">
+        {filteredFacilities.map((facility) => (
+          <FacilityCard
+            key={facility.id}
+            facility={facility}
+            onDetail={setDetailFacility}
+            onFocus={setFocusedFacility}
+          />
+        ))}
+      </section>
 
       {isFormOpen && (
         <div className="modal-backdrop" onClick={() => setIsFormOpen(false)}>
@@ -159,42 +152,13 @@ function App() {
         </div>
       )}
 
-      {isLoginOpen && (
-        <div className="modal-backdrop" onClick={() => setIsLoginOpen(false)}>
-          <div className="modal auth-modal" onClick={(event) => event.stopPropagation()}>
-            <h3>Login untuk Tambah/Edit</h3>
-            <p className="auth-note">Lihat data tidak perlu login. Login hanya dibutuhkan untuk tambah atau edit fasilitas.</p>
-            <form className="auth-form" onSubmit={handleLogin}>
-              <label>Username
-                <input
-                  required
-                  value={loginData.username}
-                  onChange={(event) => setLoginData((prev) => ({ ...prev, username: event.target.value }))}
-                />
-              </label>
-              <label>Password
-                <input
-                  required
-                  type="password"
-                  value={loginData.password}
-                  onChange={(event) => setLoginData((prev) => ({ ...prev, password: event.target.value }))}
-                />
-              </label>
-              {loginError && <p className="auth-error">{loginError}</p>}
-              <p className="auth-hint">Akun contoh: admin.pusat / AdminPusat!2026</p>
-              <div className="actions">
-                <button type="submit">Login</button>
-                <button type="button" onClick={() => setIsLoginOpen(false)}>Batal</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       <FacilityDetailModal
         facility={detailFacility}
         onClose={() => setDetailFacility(null)}
-        onEdit={(facility) => requireLoginFor(() => openEditForm(facility))}
+        onEdit={(facility) => {
+          setEditingFacility(facility);
+          setIsFormOpen(true);
+        }}
         onDelete={handleDelete}
       />
     </div>

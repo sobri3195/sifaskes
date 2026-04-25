@@ -23,19 +23,36 @@ const defaultValue = {
   },
 };
 
+const sdmLabels = {
+  dokterUmum: 'Dokter umum',
+  dokterGigi: 'Dokter gigi',
+  perawat: 'Perawat',
+  bidan: 'Bidan',
+  apoteker: 'Apoteker',
+  tenagaAdministrasi: 'Tenaga administrasi',
+  tenagaLainnya: 'Tenaga lainnya',
+};
+
 function FacilityForm({ initialData, onSave, onCancel }) {
   const [form, setForm] = useState(defaultValue);
 
   useEffect(() => {
     if (initialData) {
       setForm({ ...defaultValue, ...initialData, sdm: { ...defaultValue.sdm, ...(initialData.sdm || {}) } });
-    } else {
-      setForm(defaultValue);
+      return;
     }
+    setForm(defaultValue);
   }, [initialData]);
 
   const updateField = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
-  const updateSdm = (field, value) => setForm((prev) => ({ ...prev, sdm: { ...prev.sdm, [field]: Number(value) } }));
+  const updateSdm = (field, value) =>
+    setForm((prev) => ({
+      ...prev,
+      sdm: {
+        ...prev.sdm,
+        [field]: Number(value),
+      },
+    }));
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -50,39 +67,113 @@ function FacilityForm({ initialData, onSave, onCancel }) {
   return (
     <form className="facility-form" onSubmit={handleSubmit}>
       <h3>{initialData ? 'Edit Fasilitas' : 'Tambah Fasilitas'}</h3>
-      <label>Nama fasilitas<input required value={form.name} onChange={(e) => updateField('name', e.target.value)} /></label>
-      <label>Jenis fasilitas
-        <select value={form.type} onChange={(e) => updateField('type', e.target.value)}>
-          {facilityTypeOptions.map((item) => <option key={item}>{item}</option>)}
-        </select>
+
+      <label>
+        Nama fasilitas
+        <input required value={form.name} onChange={(event) => updateField('name', event.target.value)} />
       </label>
-      <label>Jajaran
-        <select value={form.jajaran} onChange={(e) => updateField('jajaran', e.target.value)}>
-          {jajaranOptions.map((item) => <option key={item}>{item}</option>)}
-        </select>
+
+      <div className="grid-2">
+        <label>
+          Jenis fasilitas
+          <select value={form.type} onChange={(event) => updateField('type', event.target.value)}>
+            {facilityTypeOptions.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Jajaran
+          <select value={form.jajaran} onChange={(event) => updateField('jajaran', event.target.value)}>
+            {jajaranOptions.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <label>
+        Alamat
+        <input value={form.address} onChange={(event) => updateField('address', event.target.value)} />
       </label>
-      <label>Alamat<input value={form.address} onChange={(e) => updateField('address', e.target.value)} /></label>
+
       <div className="grid-2">
-        <label>Latitude<input type="number" step="any" value={form.latitude} onChange={(e) => updateField('latitude', e.target.value)} /></label>
-        <label>Longitude<input type="number" step="any" value={form.longitude} onChange={(e) => updateField('longitude', e.target.value)} /></label>
+        <label>
+          Latitude
+          <input
+            required
+            type="number"
+            step="any"
+            value={form.latitude}
+            onChange={(event) => updateField('latitude', event.target.value)}
+          />
+        </label>
+
+        <label>
+          Longitude
+          <input
+            required
+            type="number"
+            step="any"
+            value={form.longitude}
+            onChange={(event) => updateField('longitude', event.target.value)}
+          />
+        </label>
       </div>
-      <label className="checkbox"><input type="checkbox" checked={form.isCoordinateEstimated} onChange={(e) => updateField('isCoordinateEstimated', e.target.checked)} />Koordinat estimasi</label>
+
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={form.isCoordinateEstimated}
+          onChange={(event) => updateField('isCoordinateEstimated', event.target.checked)}
+        />
+        Koordinat masih estimasi
+      </label>
+
       <div className="grid-2">
-        <label>Akreditasi<input value={form.accreditation} onChange={(e) => updateField('accreditation', e.target.value)} /></label>
-        <label>Jumlah bed<input type="number" value={form.bedCount} onChange={(e) => updateField('bedCount', e.target.value)} /></label>
+        <label>
+          Akreditasi
+          <input value={form.accreditation} onChange={(event) => updateField('accreditation', event.target.value)} />
+        </label>
+
+        <label>
+          Jumlah bed
+          <input type="number" min="0" value={form.bedCount} onChange={(event) => updateField('bedCount', event.target.value)} />
+        </label>
       </div>
+
       <fieldset>
         <legend>Data SDM</legend>
         <div className="grid-2">
           {Object.keys(form.sdm).map((key) => (
-            <label key={key}>{key}<input type="number" value={form.sdm[key]} onChange={(e) => updateSdm(key, e.target.value)} /></label>
+            <label key={key}>
+              {sdmLabels[key]}
+              <input
+                type="number"
+                min="0"
+                value={form.sdm[key]}
+                onChange={(event) => updateSdm(key, event.target.value)}
+              />
+            </label>
           ))}
         </div>
       </fieldset>
-      <label>Catatan profil singkat<textarea value={form.profileNote} onChange={(e) => updateField('profileNote', e.target.value)} /></label>
+
+      <label>
+        Catatan profil singkat
+        <textarea value={form.profileNote} onChange={(event) => updateField('profileNote', event.target.value)} />
+      </label>
+
       <div className="actions">
         <button type="submit">Simpan</button>
-        <button type="button" onClick={onCancel}>Batal</button>
+        <button type="button" onClick={onCancel}>
+          Batal
+        </button>
       </div>
     </form>
   );
