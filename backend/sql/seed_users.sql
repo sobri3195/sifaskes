@@ -14,7 +14,16 @@ VALUES (
 INSERT INTO users (facility_id, username, password_hash, role)
 SELECT
     f.id,
-    CONCAT('admin.', LPAD(f.id, 3, '0')),
+    CONCAT(
+        'admin.',
+        CASE
+            WHEN f.type = 'RSAU BLU' THEN 'blu'
+            WHEN f.type = 'RSAU PNBP' THEN 'pnbp'
+            ELSE 'fktp'
+        END,
+        '.',
+        LPAD(f.id, 3, '0')
+    ),
     '$2y$12$Y.FgjRI47H6Q7DG.ROV6Ke02j3Ocw.6aS3P5GUQWpxt6f9.b1LoYK',
     'rs_admin'
 FROM facilities f;
@@ -23,7 +32,16 @@ FROM facilities f;
 INSERT INTO users (facility_id, username, password_hash, role)
 SELECT
     f.id,
-    CONCAT('user.', LPAD(f.id, 3, '0')),
+    CONCAT(
+        'user.',
+        CASE
+            WHEN f.type = 'RSAU BLU' THEN 'blu'
+            WHEN f.type = 'RSAU PNBP' THEN 'pnbp'
+            ELSE 'fktp'
+        END,
+        '.',
+        LPAD(f.id, 3, '0')
+    ),
     '$2y$12$Z.jHwWGzjJTZ.jhTMXUk6eN8XfGWWvcQGuKKu/2YDJ.JSUte4o3Ke',
     'user_rs'
 FROM facilities f;
