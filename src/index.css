@@ -8,6 +8,15 @@ body { margin: 0; background: #f3f7fb; }
 .header h1 { margin: 0; }
 .header p { margin: 4px 0 0; }
 .tagline { font-size: 0.92rem; opacity: 0.95; }
+.header-right { display: grid; justify-items: end; gap: 8px; }
+.auth-status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; background: rgba(255, 255, 255, 0.18); padding: 6px 10px; border-radius: 999px; }
+.auth-status button { border: none; border-radius: 999px; background: #ffffff; color: #0b3f78; padding: 6px 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+.auth-status--guest { opacity: 0.95; }
+.auth-modal { width: min(460px, 100%); }
+.auth-form { display: grid; gap: 10px; }
+.auth-note { margin-top: 0; color: #36506b; font-size: 0.92rem; }
+.auth-error { margin: 0; color: #be2121; font-size: 0.9rem; }
+.auth-hint { margin: 0; color: #4a6179; font-size: 0.82rem; }
 .toolbar { margin: 16px 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
 .toolbar input, .toolbar select, .toolbar button, .facility-form input, .facility-form select, .facility-form textarea { border: 1px solid #b8c5d3; border-radius: 10px; padding: 10px; font: inherit; }
 .toolbar button, .facility-card button, .actions button, .popup-content button, .map-toolbar button { background: #0659a7; color: #fff; border: none; border-radius: 10px; padding: 10px 12px; cursor: pointer; }
@@ -48,7 +57,9 @@ body { margin: 0; background: #f3f7fb; }
   .header { padding: 14px; }
   .header-brand { width: 100%; }
   .header-logo { width: 40px; height: 40px; border-radius: 10px; }
+  .header-right { width: 100%; justify-items: start; }
   .tagline { font-size: 0.84rem; }
+  .auth-status { flex-wrap: wrap; border-radius: 12px; }
   .toolbar { grid-template-columns: 1fr; }
   .toolbar input, .toolbar select, .toolbar button { width: 100%; }
   .main-map { height: 50vh; min-height: 280px; }
