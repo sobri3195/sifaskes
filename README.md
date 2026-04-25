@@ -5,6 +5,10 @@ Tagline: **Peta Profil RSAU & FKTP Jajaran TNI AU**
 
 Aplikasi web React + Vite untuk menampilkan profil fasilitas kesehatan TNI AU (RSAU/FKTP) pada peta Indonesia. Data tersimpan penuh di **Local Storage**, tanpa backend/database server.
 
+Referensi klasifikasi tipe RS (ditampilkan juga di UI):
+- **Kemenkes**: RS umum kelas **A/B/C/D**.
+- **Kemenhan/TNI**: klasifikasi **Rumah Sakit Tingkat II/III/IV**.
+
 ## 1) Struktur Folder Project
 
 ```bash
