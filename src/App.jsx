@@ -83,6 +83,10 @@ function App() {
   };
 
   const handleDelete = (id) => {
+    if (!currentUser) {
+      openLogin();
+      return;
+    }
     const next = facilities.filter((item) => item.id !== id);
     persist(next);
     setDetailFacility(null);

@@ -66,7 +66,11 @@ function FacilityDetailModal({ facility, onClose, onEdit, onDelete, canEdit, onR
           <button type="button" onClick={() => (canEdit ? onEdit(facility) : onRequireLogin())}>
             Edit
           </button>
-          <button type="button" className="danger" onClick={() => onDelete(facility.id)}>
+          <button
+            type="button"
+            className="danger"
+            onClick={() => (canEdit ? onDelete(facility.id) : onRequireLogin())}
+          >
             Hapus
           </button>
         </div>
