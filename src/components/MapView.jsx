@@ -24,6 +24,14 @@ function MapFocusHandler({ focusedFacility }) {
 }
 
 function MapView({ facilities, onDetail, focusedFacility }) {
+  const handlePopupDetail = async (facility) => {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    }
+
+    onDetail(facility);
+  };
+
   const mapWrapperRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const markerIcons = useMemo(() => {
@@ -94,7 +102,7 @@ function MapView({ facilities, onDetail, focusedFacility }) {
                   <p>Akreditasi: {facility.accreditation || '-'}</p>
                   <p>Jumlah bed: {facility.bedCount || 0}</p>
                   <p>Jumlah SDM: {totalSdm(facility.sdm)}</p>
-                  <button type="button" onClick={() => onDetail(facility)}>
+                  <button type="button" onClick={() => handlePopupDetail(facility)}>
                     Lihat Detail
                   </button>
                 </div>
