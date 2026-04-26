@@ -4,7 +4,9 @@ import MapView from './components/MapView';
 import FacilityCard from './components/FacilityCard';
 import FacilityForm from './components/FacilityForm';
 import FacilityDetailModal from './components/FacilityDetailModal';
+import LoginModal from './components/LoginModal';
 import { initializeFacilities, saveFacilities } from './utils/storage';
+import { clearSession, loadSession, loginWithCredentials } from './utils/auth';
 import { facilityTypeOptions, jajaranOptions } from './data/seedFacilities';
 
 const rsTypeReference = [
@@ -26,7 +28,9 @@ function App() {
   const [detailFacility, setDetailFacility] = useState(null);
   const [editingFacility, setEditingFacility] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [focusedFacility, setFocusedFacility] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => loadSession());
 
   const filteredFacilities = useMemo(
     () =>
@@ -43,6 +47,8 @@ function App() {
     setFacilities(next);
     saveFacilities(next);
   };
+
+  const openLogin = () => setIsLoginOpen(true);
 
   const handleSave = (facility) => {
     const now = new Date().toISOString();
@@ -85,9 +91,24 @@ function App() {
     }
   };
 
+  const handleLogin = (username, password) => {
+    const result = loginWithCredentials(username, password);
+    if (result.ok) {
+      setCurrentUser(result.user);
+    }
+    return result;
+  };
+
+  const handleLogout = () => {
+    clearSession();
+    setCurrentUser(null);
+    setIsFormOpen(false);
+    setEditingFacility(null);
+  };
+
   return (
     <div className="app-container">
-      <Header />
+      <Header currentUser={currentUser} onLogin={openLogin} onLogout={handleLogout} />
 
       <section className="rs-type-reference" aria-label="Referensi tipe rumah sakit">
         <p>
@@ -130,6 +151,10 @@ function App() {
         <button
           type="button"
           onClick={() => {
+            if (!currentUser) {
+              openLogin();
+              return;
+            }
             setEditingFacility(null);
             setIsFormOpen(true);
           }}
@@ -137,6 +162,10 @@ function App() {
           + Tambah Fasilitas
         </button>
       </section>
+
+      {!currentUser && (
+        <p className="auth-note inline">Login dibutuhkan hanya saat tambah/edit. Lihat data tetap bisa tanpa login.</p>
+      )}
 
       <MapView
         facilities={filteredFacilities}
@@ -176,10 +205,18 @@ function App() {
         </div>
       )}
 
+      {isLoginOpen && <LoginModal onClose={() => setIsLoginOpen(false)} onSubmit={handleLogin} />}
+
       <FacilityDetailModal
         facility={detailFacility}
+        canEdit={Boolean(currentUser)}
+        onRequireLogin={openLogin}
         onClose={() => setDetailFacility(null)}
         onEdit={(facility) => {
+          if (!currentUser) {
+            openLogin();
+            return;
+          }
           setEditingFacility(facility);
           setIsFormOpen(true);
         }}

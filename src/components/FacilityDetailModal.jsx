@@ -2,7 +2,7 @@ import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 
 const totalSdm = (sdm = {}) => Object.values(sdm).reduce((sum, n) => sum + Number(n || 0), 0);
 
-function FacilityDetailModal({ facility, onClose, onEdit, onDelete }) {
+function FacilityDetailModal({ facility, onClose, onEdit, onDelete, canEdit, onRequireLogin }) {
   if (!facility) return null;
 
   return (
@@ -63,7 +63,7 @@ function FacilityDetailModal({ facility, onClose, onEdit, onDelete }) {
         </MapContainer>
 
         <div className="actions">
-          <button type="button" onClick={() => onEdit(facility)}>
+          <button type="button" onClick={() => (canEdit ? onEdit(facility) : onRequireLogin())}>
             Edit
           </button>
           <button type="button" className="danger" onClick={() => onDelete(facility.id)}>
