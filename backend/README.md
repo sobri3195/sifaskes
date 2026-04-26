@@ -14,10 +14,16 @@ Pastikan MySQL aktif, lalu jalankan dari root project:
 mysql -u root -p < backend/sql/bootstrap.sql
 ```
 
-File yang dijalankan:
+File yang dijalankan oleh `bootstrap.sql`:
 - `backend/sql/schema.sql` → struktur tabel.
 - `backend/sql/seed_facilities.sql` → seed semua data fasilitas (80 entri).
 - `backend/sql/seed_users.sql` → seed akun admin pusat + akun per fasilitas.
+
+Atau gunakan satu file gabungan:
+
+```bash
+mysql -u root -p < backend/sql/sifaskes_full.sql
+```
 
 ## 2) Setup environment
 
